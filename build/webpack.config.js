@@ -12,6 +12,12 @@ const { browserslist } = require("../package.json");
 
 const filename = (name) => basename(name, extname(name));
 
+function getTemplateData(paths, template) {
+  const path = paths.find((which) => which.includes(filename(template)));
+
+  return path ? require(path) : {};
+}
+
 const development = (PATH) => ({
   mode: "development",
 
@@ -46,7 +52,7 @@ const common = (PATH) => ({
   module: {
     rules: [
       // === Handlebars ===
-      { test: /\.handlebars$/, loader: "handlebars-loader" },
+      { test: /\.(handlebars|hbs)$/, loader: "handlebars-loader" },
 
       // === JS ===
       {
@@ -100,6 +106,7 @@ const common = (PATH) => ({
           title: "Bankee Credit",
           filename: filename(template) + ".html",
           template,
+          templateParameters: getTemplateData(PATH.ENTRY.JSON, template),
         })
     ),
   ],
@@ -111,7 +118,8 @@ module.exports = async () => {
   const PATH = {
     ENTRY: {
       JS: path("src/scripts/main.js"),
-      HTML: await glob(path("src/*.handlebars")),
+      HTML: await glob(path("src/*.{handlebars,hbs}")),
+      JSON: await glob(path("src/data/*.json")),
     },
     OUTPUT: path("dist"),
     ASSETS: path("src/assets"),

@@ -1,6 +1,10 @@
 module.exports = {
-  purge: ["./src/**/*.handlebars"],
-  darkMode: false, // or 'media' or 'class'
+  purge: [
+    //
+    "./src/**/*.handlebars",
+    "./src/**/*.hbs",
+  ],
+  darkMode: false,
   theme: {
     extend: {},
   },
